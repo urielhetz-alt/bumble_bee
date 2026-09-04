@@ -6,6 +6,20 @@
 > Bumble Bee is in a pre-alpha state, and only suitable for use by developers
 >
 
+## 🎯 Quick Start
+
+### **Studio - Multi-Language IDE with Live Preview**
+Experience the power of Bumble Bee Studio with real-time compilation and live preview for all supported languages:
+
+- **[🚀 Open Studio.html](Studio.html)** - Advanced coding environment with real compilers
+
+### **Supported Languages in Studio:**
+- 🟠 **HTML** - Full DOM rendering with live preview
+- 🟡 **CSS** - Styled component rendering with theme preview
+- 🟢 **JavaScript** - Babel compiled execution with console output
+- 🔵 **TypeScript** - Full TypeScript 5.2 compilation with type checking
+- 🟣 **INFRA** - Custom language interpreter with command execution
+
 ## Features
 
 We aim to build a complete, usable browser for the modern web.
@@ -28,6 +42,38 @@ At the moment, many core library support components are inherited from SerenityO
 - LibMedia: Audio and video playback
 - LibCore: Event loop, OS abstraction layer
 - LibIPC: Inter-process communication
+
+## 📊 Studio Features
+
+### **Real Compiler Engines**
+- ✅ TypeScript Compiler (v5.2.2) - Full type checking & transpilation
+- ✅ Babel Compiler (v7.23.5) - ES2015+ JavaScript support
+- ✅ HTML Validator - DOM parsing & structure validation
+- ✅ CSS Parser - Rule extraction & validation
+- ✅ INFRA Interpreter - Custom language execution
+
+### **Live Preview for All Languages**
+| Language | Preview | Compiler |
+|----------|---------|----------|
+| HTML | ✅ Real-time DOM rendering | HTML Validator |
+| CSS | ✅ Styled component preview | CSS Parser |
+| JavaScript | ✅ Console output with formatting | Babel |
+| TypeScript | ✅ Transpiled execution preview | TypeScript 5.2 |
+| INFRA | ✅ Command execution output | INFRA Interpreter |
+
+### **Editor Features**
+- 📝 Line numbers with auto-update
+- 🎨 Syntax-aware output formatting
+- 💾 Auto-save to browser localStorage
+- 📥 Download code as files
+- ✨ Code formatting & validation
+- 🎯 Real-time status indicators
+
+### **Sandstone Theme Design**
+- 🏜️ Warm, natural color palette
+- 👁️ Easy on the eyes for extended coding sessions
+- 📱 Fully responsive interface
+- ♿ High contrast text for accessibility
 
 ## How do I build and run this?
 

@@ -95,6 +95,80 @@ Before opening an issue, please see the [issue policy](CONTRIBUTING.md#issue-pol
 
 The project participation guidelines can be found in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-## License
+## 📜 License
 
-Bumble Bee is licensed under a 2-clause BSD license.
+### **Dual License Structure**
+
+This repository contains code under **two different licenses**:
+
+#### **1. Original Ladybird Browser Code - BSD 2-Clause License**
+- **Applies to:** Core browser engine, libraries, and inherited Ladybird code
+- **Copyright:** (c) 2018-present, the Ladybird developers
+- **Details:** See [LICENSE](LICENSE) file
+- **License Text:** 
+```
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the copyright notice, conditions, and disclaimer
+2. Redistributions in binary form must reproduce the copyright notice, conditions, and disclaimer
+THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.
+```
+
+#### **2. Bumble Bee Studio & Original Contributions - GNU General Public License v3.0**
+- **Applies to:** Studio.html, custom modifications, and original code
+- **Copyright:** (c) 2024-present, Bumble Bee Contributors
+- **Details:** See [COPYING-GPL3](COPYING-GPL3) file
+- **Permissions:** Freedom to use, modify, and distribute under GPL-3.0 terms
+- **Requirement:** Derivative works must also be GPL-3.0 licensed
+
+### **License Compatibility**
+
+| Component | License | Can Use | Can Distribute |
+|-----------|---------|---------|-----------------|
+| Original Ladybird Code | BSD 2-Clause | ✅ Yes | ✅ Yes (with attribution) |
+| Studio.html | GPL-3.0 | ✅ Yes | ✅ Yes (must share source) |
+| Bumble Bee Modifications | GPL-3.0 | ✅ Yes | ✅ Yes (must share source) |
+
+### **How to Use Different Parts**
+
+**For BSD 2-Clause Components (Ladybird code):**
+- Use freely in commercial or non-commercial projects
+- No need to release source code
+- Must include original copyright notice
+
+**For GPL-3.0 Components (Studio.html, modifications):**
+- Use freely (including commercially)
+- Must provide source code when distributing
+- Any modifications must also be GPL-3.0
+- Derivative works must include GPL license
+
+### **File-Level License Headers**
+
+To identify which license applies to specific files:
+
+```
+// BSD 2-Clause Licensed - Part of original Ladybird
+// Copyright (c) 2018-present, the Ladybird developers
+
+// GPL-3.0 Licensed - Bumble Bee Studio & Modifications
+// Copyright (c) 2024-present, Bumble Bee Contributors
+```
+
+### **Legal Disclaimer**
+
+- This dual-license approach is **fully legal** and widely used in open source
+- Original Ladybird code retains BSD 2-Clause as per upstream
+- New Bumble Bee contributions are offered under GPL-3.0
+- Users can choose to use components under their applicable license
+- For license-specific questions, consult [opensource.org](https://opensource.org)
+
+### **Contributing to Bumble Bee**
+
+By contributing to this repository, you agree that:
+- Your contributions to original Bumble Bee code are licensed under GPL-3.0
+- Your contributions to Ladybird-derived code follow the original BSD 2-Clause
+- You have the right to grant these licenses
+
+---
+
+**Summary:** Bumble Bee Studio is **GPL-3.0** 🐝 while respecting the original **BSD 2-Clause** Ladybird license ⚖️

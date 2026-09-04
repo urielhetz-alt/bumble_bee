@@ -23,6 +23,8 @@ set(SOURCES
     DownloadSegmentation.cpp
     DownloadStore.cpp
     ExternalURLHandler.cpp
+    ExtensionManager.cpp
+    ExtensionPermissions.cpp
     FaviconStore.cpp
     FileDownloader.cpp
     FontService.cpp

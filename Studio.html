@@ -410,6 +410,56 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #8b5a2b;
         }
+
+        /* Fullscreen run mode */
+        .container.running-mode .sidebar,
+        .container.running-mode .editor-section,
+        .container.running-mode .output-section,
+        .container.running-mode .status-bar { display: none !important; }
+
+        .container.running-mode .main-content {
+            width: 100vw !important;
+            height: 100vh !important;
+            flex: none;
+        }
+
+        .container.running-mode .preview-section {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            display: flex !important;
+            z-index: 9999;
+            border: none !important;
+        }
+
+        .container.running-mode .preview-header { display: none !important; }
+
+        .container.running-mode #preview {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+        }
+
+        #backToEditor {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 10000;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(30, 30, 30, 0.85);
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .container.running-mode #backToEditor { display: block; }
+
     </style>
 </head>
 <body>
@@ -472,6 +522,8 @@
         </div>
     </div>
 
+    <button id="backToEditor">← Back to Editor</button>
+
     <!-- Load real compilers -->
     <script src="https://cdn.jsdelivr.net/npm/typescript@5.2.2/lib/typescript.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -486,6 +538,8 @@
         const langTitle = document.getElementById('lang-title');
         const compilerInfo = document.getElementById('compiler-info');
         const lineNumbers = document.getElementById('line-numbers');
+        const container = document.querySelector('.container');
+        const backToEditor = document.getElementById('backToEditor');
         
         let currentLanguage = 'html';
         
@@ -846,6 +900,10 @@ send *Compile and run to test!*`
             previewSection.classList.toggle('active');
         });
         document.getElementById('format-btn').addEventListener('click', formatCode);
+        backToEditor.addEventListener('click', exitRunMode);
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && container.classList.contains('running-mode')) exitRunMode();
+        });
 
         editor.addEventListener('input', updateLineNumbers);
         editor.addEventListener('keydown', handleTab);
@@ -854,6 +912,7 @@ send *Compile and run to test!*`
 
         async function runCode() {
             clearOutput();
+            container.classList.add('running-mode');
             const code = editor.value;
             
             try {
@@ -885,6 +944,10 @@ send *Compile and run to test!*`
                 addOutput(`✗ Runtime Error: ${error.message}`, 'error');
                 setStatus('error', `✗ ${error.message}`);
             }
+        }
+
+        function exitRunMode() {
+            container.classList.remove('running-mode');
         }
 
         function runHTML(code) {

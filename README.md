@@ -1,16 +1,16 @@
-# Ladybird
+# Bumble Bee
 
-[Ladybird](https://ladybird.org) is a truly independent web browser, using a novel engine based on web standards.
+[Bumble Bee](https://ladybird.org) is a truly independent web browser, using a novel engine based on web standards.
 
 > [!IMPORTANT]
-> Ladybird is in a pre-alpha state, and only suitable for use by developers
+> Bumble Bee is in a pre-alpha state, and only suitable for use by developers
 >
 
 ## Features
 
 We aim to build a complete, usable browser for the modern web.
 
-Ladybird uses a multi-process architecture with a main UI process, several WebContent renderer processes,
+Bumble Bee uses a multi-process architecture with a main UI process, several WebContent renderer processes,
 an ImageDecoder process, and a RequestServer process.
 
 Image decoding and network connections are done out of process to be more robust against malicious content.
@@ -31,9 +31,9 @@ At the moment, many core library support components are inherited from SerenityO
 
 ## How do I build and run this?
 
-See [build instructions](Documentation/BuildInstructionsLadybird.md) for information on how to build Ladybird.
+See [build instructions](Documentation/BuildInstructionsLadybird.md) for information on how to build Bumble Bee.
 
-Ladybird runs on Linux, macOS, Windows (with WSL2), and many other \*Nixes.
+Bumble Bee runs on Linux, macOS, Windows (with WSL2), and many other \*Nixes.
 
 ## How do I read the documentation?
 
@@ -43,7 +43,7 @@ Code-related documentation can be found in the [documentation](Documentation/) f
 
 Join [our Discord server](https://discord.gg/nvfjVJ4Svh) to participate in issue and development discussions.
 
-Please read [Getting involved with Ladybird](Documentation/GettingStartedContributing.md) if you're new to Ladybird and want to help.
+Please read [Getting involved with Bumble Bee](Documentation/GettingStartedContributing.md) if you're new to Bumble Bee and want to help.
 
 Before opening an issue, please see the [issue policy](CONTRIBUTING.md#issue-policy) and the [detailed issue-reporting guidelines](ISSUES.md).
 
@@ -51,4 +51,4 @@ The project participation guidelines can be found in [`CONTRIBUTING.md`](CONTRIB
 
 ## License
 
-Ladybird is licensed under a 2-clause BSD license.
+Bumble Bee is licensed under a 2-clause BSD license.

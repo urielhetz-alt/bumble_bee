@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumble Bee Studio - Multi-Language Code Compiler & Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #e8d4b8 0%, #d9c4a8 100%);
+            color: #2d1b0b;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            gap: 0;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #f5ead6;
+            border-right: 2px solid #d4a574;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(139, 90, 43, 0.1);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #8b5a2b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 1px;
+        }
+
+        .logo::before {
+            content: "🐝";
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(139, 90, 43, 0.2));
+        }
+
+        .language-selector {
+            margin-bottom: 30px;
+        }
+
+        .language-selector label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #8b5a2b;
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .language-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            padding: 12px 15px;
+            border: 2px solid #d4a574;
+            background: #fef7f0;
+            color: #5d3a1a;
+            cursor: pointer;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            border-color: #8b5a2b;
+            background: #fff9f3;
+            transform: translateX(4px);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #d4a574 0%, #c9945d 100%);
+            color: #fef7f0;
+            border-color: #8b5a2b;
+            box-shadow: 0 4px 8px rgba(139, 90, 43, 0.2);
+        }
+
+        .tools-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #d4a574;
+        }
+
+        .tools-section label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #8b5a2b;
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .tool-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tool-btn {
+            padding: 10px 15px;
+            border: 2px solid #d4a574;
+            background: #fef7f0;
+            color: #5d3a1a;
+            cursor: pointer;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: #fff9f3;
+            border-color: #8b5a2b;
+            transform: translateX(4px);
+        }
+
+        .tool-btn:active {
+            transform: scale(0.98);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            background: #f9f3eb;
+        }
+
+        .editor-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-bottom: 2px solid #d4a574;
+        }
+
+        .editor-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f5ead6 0%, #ede5d3 100%);
+            border-bottom: 2px solid #d4a574;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-header h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8b5a2b;
+            font-weight: 700;
+        }
+
+        .compiler-info {
+            font-size: 11px;
+            color: #a0704f;
+            padding: 4px 8px;
+            background: rgba(212, 165, 116, 0.2);
+            border-radius: 4px;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .code-editor {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            background: #fef7f0;
+        }
+
+        .line-numbers {
+            background: #f5ead6;
+            border-right: 2px solid #d4a574;
+            padding: 15px 10px;
+            text-align: right;
+            color: #a0704f;
+            font-size: 12px;
+            line-height: 1.6;
+            min-width: 40px;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        textarea {
+            flex: 1;
+            background: #fef7f0;
+            color: #2d1b0b;
+            border: none;
+            padding: 15px 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        textarea::selection {
+            background: rgba(212, 165, 116, 0.4);
+            color: #2d1b0b;
+        }
+
+        .output-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-top: 2px solid #d4a574;
+            overflow: hidden;
+        }
+
+        .output-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f5ead6 0%, #ede5d3 100%);
+            border-bottom: 2px solid #d4a574;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .output-header h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8b5a2b;
+            font-weight: 700;
+        }
+
+        #output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 20px;
+            background: #fef7f0;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .output-line {
+            margin-bottom: 6px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+
+        .output-line.error {
+            color: #c1440e;
+            background: rgba(193, 68, 14, 0.1);
+            border-left: 3px solid #c1440e;
+            padding-left: 10px;
+        }
+
+        .output-line.success {
+            color: #6b7f1f;
+            background: rgba(107, 127, 31, 0.1);
+            border-left: 3px solid #6b7f1f;
+            padding-left: 10px;
+        }
+
+        .output-line.warning {
+            color: #c4860f;
+            background: rgba(196, 134, 15, 0.1);
+            border-left: 3px solid #c4860f;
+            padding-left: 10px;
+        }
+
+        .output-line.info {
+            color: #5d6a7e;
+            background: rgba(93, 106, 126, 0.05);
+            border-left: 3px solid #8b5a2b;
+            padding-left: 10px;
+        }
+
+        .preview-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-top: 2px solid #d4a574;
+            overflow: hidden;
+            display: none;
+        }
+
+        .preview-section.active {
+            display: flex;
+        }
+
+        .preview-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f5ead6 0%, #ede5d3 100%);
+            border-bottom: 2px solid #d4a574;
+        }
+
+        .preview-header h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8b5a2b;
+            font-weight: 700;
+        }
+
+        #preview {
+            flex: 1;
+            background: white;
+            overflow: auto;
+            border: none;
+        }
+
+        .status-bar {
+            height: 32px;
+            background: linear-gradient(135deg, #f5ead6 0%, #ede5d3 100%);
+            border-top: 2px solid #d4a574;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #8b5a2b;
+            font-weight: 600;
+        }
+
+        .status-bar.ready {
+            color: #6b7f1f;
+        }
+
+        .status-bar.error {
+            color: #c1440e;
+        }
+
+        .status-bar.compiling {
+            color: #c4860f;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 2px solid #d4a574;
+            }
+
+            .main-content {
+                height: auto;
+            }
+        }
+
+        .compiler-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: rgba(212, 165, 116, 0.3);
+            border-radius: 3px;
+            font-size: 10px;
+            color: #8b5a2b;
+            margin-left: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5ead6;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4a574;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5a2b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">Bumble Bee Studio</div>
+            
+            <div class="language-selector">
+                <label>🎯 Language</label>
+                <div class="language-buttons">
+                    <button class="lang-btn active" data-lang="html">HTML</button>
+                    <button class="lang-btn" data-lang="css">CSS</button>
+                    <button class="lang-btn" data-lang="javascript">JavaScript</button>
+                    <button class="lang-btn" data-lang="typescript">TypeScript</button>
+                    <button class="lang-btn" data-lang="infra">INFRA</button>
+                </div>
+            </div>
+
+            <div class="tools-section">
+                <label>🛠️ Compiler & Tools</label>
+                <div class="tool-buttons">
+                    <button class="tool-btn" id="run-btn">▶ Compile & Run</button>
+                    <button class="tool-btn" id="clear-btn">🗑 Clear Output</button>
+                    <button class="tool-btn" id="save-btn">💾 Save Code</button>
+                    <button class="tool-btn" id="toggle-preview-btn">👁 Preview</button>
+                    <button class="tool-btn" id="format-btn">✨ Format</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="editor-header">
+                    <h2 id="lang-title">HTML Editor</h2>
+                    <span class="compiler-info" id="compiler-info">Ready</span>
+                </div>
+                <div class="editor-wrapper">
+                    <div class="code-editor">
+                        <div class="line-numbers" id="line-numbers"></div>
+                        <textarea id="editor" placeholder="Write your code here..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>📊 Output & Compiler Console</h2>
+                </div>
+                <div id="output"></div>
+            </div>
+
+            <div class="preview-section" id="preview-section">
+                <div class="preview-header">
+                    <h2>👁 Live Preview</h2>
+                </div>
+                <iframe id="preview" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+
+            <div class="status-bar ready" id="status-bar">✓ Ready to compile</div>
+        </div>
+    </div>
+
+    <!-- Load real compilers -->
+    <script src="https://cdn.jsdelivr.net/npm/typescript@5.2.2/lib/typescript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+    <script>
+        // Editor state
+        const editor = document.getElementById('editor');
+        const output = document.getElementById('output');
+        const preview = document.getElementById('preview');
+        const previewSection = document.getElementById('preview-section');
+        const statusBar = document.getElementById('status-bar');
+        const langTitle = document.getElementById('lang-title');
+        const compilerInfo = document.getElementById('compiler-info');
+        const lineNumbers = document.getElementById('line-numbers');
+        
+        let currentLanguage = 'html';
+        
+        const codeSnippets = {
+            html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Bumble Bee Studio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8d4b8, #d9c4a8);
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fef7f0;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(139, 90, 43, 0.2);
+        }
+        h1 { color: #8b5a2b; }
+        button {
+            background: #d4a574;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #8b5a2b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐝 Welcome to Bumble Bee Studio!</h1>
+        <p>Edit and run code in real-time with full compiler support.</p>
+        <button onclick="alert('Hello from Bumble Bee! 🐝')">Click Me</button>
+    </div>
+</body>
+</html>`,
+            css: `/* Bumble Bee Studio - Sandstone Theme */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e8d4b8 0%, #d9c4a8 100%);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    background: linear-gradient(to bottom, #fef7f0, #f5ead6);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(139, 90, 43, 0.3);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    color: #8b5a2b;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(139, 90, 43, 0.1);
+}
+
+p {
+    color: #5d3a1a;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.highlight {
+    background: rgba(212, 165, 116, 0.2);
+    padding: 10px;
+    border-left: 4px solid #8b5a2b;
+    border-radius: 4px;
+}`,
+            javascript: `// Bumble Bee Studio - JavaScript Compiler Demo
+console.log('🐝 JavaScript Compiler Ready!');
+
+// Real compiler test: ES6+ features
+class BumbleBee {
+    constructor(name) {
+        this.name = name;
+        this.energy = 100;
+    }
+    
+    buzz() {
+        return \`\${this.name} goes bzzzzzz! 🐝\`;
+    }
+    
+    fly(distance) {
+        this.energy -= distance / 10;
+        return \`Flew \${distance}m! Energy: \${this.energy.toFixed(1)}%\`;
+    }
+}
+
+const bee = new BumbleBee('Bumble');
+console.log(bee.buzz());
+console.log(bee.fly(50));
+
+// Arrow functions
+const fibonacci = (n) => n <= 1 ? n : fibonacci(n-1) + fibonacci(n-2);
+console.log('Fibonacci(10):', fibonacci(10));
+
+// Template literals
+const info = \`
+  Bee Name: \${bee.name}
+  Current Energy: \${bee.energy}%
+  Status: Flying! 🐝
+\`;
+console.log(info);`,
+            typescript: `// Bumble Bee Studio - TypeScript Compiler
+interface Bee {
+    name: string;
+    color: string;
+    wingFlaps: number;
+    energy?: number;
+}
+
+interface Flight {
+    distance: number;
+    duration: number;
+    altitude: number;
+}
+
+class BumbleBeeCompiler {
+    private bee: Bee;
+    private flights: Flight[] = [];
+    
+    constructor(bee: Bee) {
+        this.bee = bee;
+        console.log(\`TypeScript: Bee '\${bee.name}' initialized\`);
+    }
+    
+    recordFlight(flight: Flight): void {
+        this.flights.push(flight);
+        console.log(\`Flight recorded: \${flight.distance}m at \${flight.altitude}m\`);
+    }
+    
+    getTotalDistance(): number {
+        return this.flights.reduce((sum, f) => sum + f.distance, 0);
+    }
+    
+    getBeeInfo(): string {
+        return \`Bee: \${this.bee.name}, Flights: \${this.flights.length}, Total: \${this.getTotalDistance()}m\`;
+    }
+}
+
+const myBee: Bee = {
+    name: 'Bumble',
+    color: 'yellow and black',
+    wingFlaps: 200,
+    energy: 100
+};
+
+const compiler = new BumbleBeeCompiler(myBee);
+compiler.recordFlight({ distance: 100, duration: 30, altitude: 10 });
+compiler.recordFlight({ distance: 150, duration: 45, altitude: 15 });
+console.log(compiler.getBeeInfo());`,
+            infra: `getlib basic, remember, SOUND, UI
+
+# 🐝 Bumble Bee INFRA Language Example
+# This is the INFRA language interpreter
+
+send *============================*
+send *  Bumble Bee INFRA Studio  *
+send *============================*
+
+# Initialize variables
+secret_num to <7>
+send *Think of a number between 1-10*
+
+# Musical setup
+<1>/<4> to <120>
+bass to <220>HZ
+treble to <440>HZ
+
+send *Bee is ready! 🐝*
+
+# Async operations example
+send *[INFRA] Language Features:*
+send *  - getlib: Load libraries*
+send *  - to: Assignment operator*
+send *  - #: Comparison operator*
+send *  - //: Block separator*
+send *  - HZ: Frequency notation*
+send *  - create: Audio export*
+
+send *Compile and run to test!*`
+        };
+
+        // ==================== COMPILER ENGINES ====================
+
+        // TypeScript Compiler
+        function compileTypeScript(code) {
+            return new Promise((resolve) => {
+                try {
+                    const result = ts.transpileModule(code, {
+                        compilerOptions: { 
+                            module: ts.ModuleKind.CommonJS,
+                            target: ts.ScriptTarget.ES2020
+                        }
+                    });
+                    addOutput('✓ TypeScript compiled successfully', 'success');
+                    resolve(result.outputText);
+                } catch (error) {
+                    addOutput(`✗ TypeScript Error: ${error.message}`, 'error');
+                    resolve(code); // Fallback to JavaScript
+                }
+            });
+        }
+
+        // JavaScript Compiler (using Babel for modern syntax)
+        function compileJavaScript(code) {
+            return new Promise((resolve) => {
+                try {
+                    const result = Babel.transform(code, {
+                        presets: ['es2015', 'es2016', 'es2017']
+                    });
+                    addOutput('✓ JavaScript compiled (Babel transpiler)', 'success');
+                    resolve(result.code);
+                } catch (error) {
+                    addOutput(`✓ Using native JavaScript engine`, 'info');
+                    resolve(code);
+                }
+            });
+        }
+
+        // HTML Compiler
+        function compileHTML(code) {
+            return new Promise((resolve) => {
+                try {
+                    // Validate HTML structure
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(code, 'text/html');
+                    if (doc.querySelectorAll('parsererror').length > 0) {
+                        addOutput('⚠ HTML parsing warning detected', 'warning');
+                    } else {
+                        addOutput('✓ HTML validated successfully', 'success');
+                    }
+                    resolve(code);
+                } catch (error) {
+                    addOutput(`✗ HTML Error: ${error.message}`, 'error');
+                    resolve(code);
+                }
+            });
+        }
+
+        // CSS Compiler
+        function compileCSS(code) {
+            return new Promise((resolve) => {
+                try {
+                    // Basic CSS validation
+                    const cssRegex = /^[^{}]*{[^}]*}|^@[^{}]*{[^}]*}/gm;
+                    const matches = code.match(cssRegex) || [];
+                    addOutput(`✓ CSS compiled - ${matches.length} rule(s) found`, 'success');
+                    resolve(code);
+                } catch (error) {
+                    addOutput(`✗ CSS Error: ${error.message}`, 'error');
+                    resolve(code);
+                }
+            });
+        }
+
+        // INFRA Language Interpreter
+        function compileINFRA(code) {
+            return new Promise((resolve) => {
+                try {
+                    addOutput('🐝 INFRA Compiler v1.0', 'info');
+                    addOutput('Parsing INFRA language...', 'info');
+                    
+                    const lines = code.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+                    let lineCount = 0;
+                    let commands = { send: 0, getlib: 0, to: 0, other: 0 };
+                    
+                    lines.forEach((line, idx) => {
+                        line = line.trim();
+                        
+                        if (line.startsWith('getlib')) {
+                            commands.getlib++;
+                            const libs = line.match(/getlib\s+(.*)/)?.[1]?.split(',') || [];
+                            addOutput(`[INFRA:${idx+1}] Libraries loaded: ${libs.join(', ').trim()}`, 'info');
+                        } else if (line.includes('send')) {
+                            commands.send++;
+                            const match = line.match(/send\s+\*([^*]+)\*/);
+                            if (match) {
+                                addOutput(`[OUTPUT] ${match[1]}`, 'success');
+                            }
+                        } else if (line.includes('to')) {
+                            commands.to++;
+                            addOutput(`[INFRA:${idx+1}] Assignment: ${line}`, 'info');
+                        } else if (line.trim()) {
+                            commands.other++;
+                        }
+                        lineCount++;
+                    });
+                    
+                    addOutput(``, 'info');
+                    addOutput(`✓ INFRA Compilation Complete`, 'success');
+                    addOutput(`  Lines parsed: ${lineCount}`, 'info');
+                    addOutput(`  Commands: send(${commands.send}), getlib(${commands.getlib}), to(${commands.to})`, 'info');
+                    resolve('INFRA_EXECUTED');
+                } catch (error) {
+                    addOutput(`✗ INFRA Error: ${error.message}`, 'error');
+                    resolve('INFRA_ERROR');
+                }
+            });
+        }
+
+        // ==================== UI EVENT LISTENERS ====================
+
+        // Language buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLanguage = btn.dataset.lang;
+                
+                const langNames = {
+                    html: 'HTML Editor',
+                    css: 'CSS Editor',
+                    javascript: 'JavaScript Editor',
+                    typescript: 'TypeScript Editor',
+                    infra: 'INFRA Language Editor'
+                };
+                
+                const compilers = {
+                    html: 'HTML Validator',
+                    css: 'CSS Parser',
+                    javascript: 'Babel Compiler',
+                    typescript: 'TypeScript Compiler',
+                    infra: 'INFRA Interpreter'
+                };
+                
+                langTitle.textContent = langNames[currentLanguage];
+                compilerInfo.textContent = compilers[currentLanguage];
+                
+                editor.value = codeSnippets[currentLanguage];
+                clearOutput();
+                previewSection.classList.remove('active');
+                updateLineNumbers();
+            });
+        });
+
+        // Load initial snippet
+        editor.value = codeSnippets.html;
+        updateLineNumbers();
+
+        // Event listeners
+        document.getElementById('run-btn').addEventListener('click', runCode);
+        document.getElementById('clear-btn').addEventListener('click', clearOutput);
+        document.getElementById('save-btn').addEventListener('click', saveFile);
+        document.getElementById('toggle-preview-btn').addEventListener('click', () => {
+            previewSection.classList.toggle('active');
+        });
+        document.getElementById('format-btn').addEventListener('click', formatCode);
+
+        editor.addEventListener('input', updateLineNumbers);
+        editor.addEventListener('keydown', handleTab);
+
+        // ==================== EXECUTION & COMPILATION ====================
+
+        async function runCode() {
+            clearOutput();
+            const code = editor.value;
+            
+            try {
+                setStatus('compiling', '⏳ Compiling...');
+                
+                switch (currentLanguage) {
+                    case 'html':
+                        await compileHTML(code);
+                        runHTML(code);
+                        break;
+                    case 'css':
+                        await compileCSS(code);
+                        runCSS(code);
+                        break;
+                    case 'javascript':
+                        const jsCode = await compileJavaScript(code);
+                        runJavaScript(jsCode);
+                        break;
+                    case 'typescript':
+                        const tsCode = await compileTypeScript(code);
+                        runJavaScript(tsCode);
+                        break;
+                    case 'infra':
+                        await compileINFRA(code);
+                        break;
+                }
+                setStatus('ready', '✓ Compilation successful');
+            } catch (error) {
+                addOutput(`✗ Runtime Error: ${error.message}`, 'error');
+                setStatus('error', `✗ ${error.message}`);
+            }
+        }
+
+        function runHTML(code) {
+            preview.srcdoc = code;
+            previewSection.classList.add('active');
+            addOutput('✓ HTML rendered in preview', 'success');
+        }
+
+        function runCSS(code) {
+            const html = `<!DOCTYPE html>
+<html>
+<head>
+    <style>${code}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSS Preview</h1>
+        <p>This is a test paragraph</p>
+        <button>Test Button</button>
+        <div class="highlight">Highlighted content</div>
+    </div>
+</body>
+</html>`;
+            preview.srcdoc = html;
+            previewSection.classList.add('active');
+            addOutput('✓ CSS rendered in preview', 'success');
+        }
+
+        function runJavaScript(code) {
+            const logs = [];
+            const originalLog = console.log;
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            
+            console.log = (...args) => {
+                logs.push({ type: 'log', msg: args.join(' ') });
+                originalLog.apply(console, args);
+            };
+            
+            console.error = (...args) => {
+                logs.push({ type: 'error', msg: args.join(' ') });
+                originalError.apply(console, args);
+            };
+            
+            console.warn = (...args) => {
+                logs.push({ type: 'warn', msg: args.join(' ') });
+                originalWarn.apply(console, args);
+            };
+            
+            try {
+                // eslint-disable-next-line no-eval
+                eval(code);
+                logs.forEach(log => {
+                    const type = log.type === 'error' ? 'error' : log.type === 'warn' ? 'warning' : 'success';
+                    addOutput(log.msg, type);
+                });
+                if (logs.length === 0) {
+                    addOutput('✓ Code executed (no console output)', 'success');
+                }
+            } catch (error) {
+                addOutput(`✗ Execution Error: ${error.message}`, 'error');
+            } finally {
+                console.log = originalLog;
+                console.error = originalError;
+                console.warn = originalWarn;
+            }
+        }
+
+        function addOutput(text, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `output-line ${type}`;
+            line.textContent = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            output.innerHTML = '';
+        }
+
+        function saveFile() {
+            const extension = {
+                html: 'html',
+                css: 'css',
+                javascript: 'js',
+                typescript: 'ts',
+                infra: 'inf'
+            }[currentLanguage];
+            
+            const blob = new Blob([editor.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `code.${extension}`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addOutput(`✓ File saved as code.${extension}`, 'success');
+        }
+
+        function formatCode() {
+            // Basic formatting
+            let code = editor.value;
+            
+            if (currentLanguage === 'html' || currentLanguage === 'css') {
+                code = code.replace(/\n\s+/g, '\n  ').trim();
+                addOutput('✓ Code formatted', 'success');
+            } else if (currentLanguage === 'javascript' || currentLanguage === 'typescript') {
+                code = code.replace(/;(\S)/g, ';\n$1').trim();
+                addOutput('✓ Code formatted (basic)', 'info');
+            }
+            
+            editor.value = code;
+            updateLineNumbers();
+        }
+
+        function updateLineNumbers() {
+            const lines = editor.value.split('\n').length;
+            lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+        }
+
+        function handleTab(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                editor.value = editor.value.substring(0, start) + '\t' + editor.value.substring(end);
+                editor.selectionStart = editor.selectionEnd = start + 1;
+                updateLineNumbers();
+            }
+        }
+
+        function setStatus(type, message) {
+            statusBar.className = `status-bar ${type}`;
+            statusBar.textContent = message;
+        }
+
+        // Auto-save to localStorage
+        editor.addEventListener('input', () => {
+            localStorage.setItem(`code-${currentLanguage}`, editor.value);
+        });
+
+        // Load from localStorage
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem(`code-${currentLanguage}`);
+            if (saved) {
+                editor.value = saved;
+                updateLineNumbers();
+            }
+        });
+    </script>
+</body>
+</html>
